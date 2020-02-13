@@ -13,4 +13,4 @@ Try:
 
 .\random.exe .\startrek\start -o new_trek -c 1 -a
 
-.\random.exe .\name70k -o outputname -c 3 -a
+.\random.exe .\name16k -o outputname -c 3 -a
