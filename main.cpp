@@ -35,7 +35,7 @@ struct RSG {
 		//Count how many lines we copied. Cast size_type to integer.
 		int count = static_cast<int>(infixes.size());
 
-		//Choose random element of "tags".
+		//Choose random element.
 		int choice = Random::get<int>(0, count - 1);
 
 		return infixes[choice];
