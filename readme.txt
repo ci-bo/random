@@ -7,9 +7,10 @@ Instructions (run in a Windows command line):
 
 -o, -c, and -a are optional.
 By default no file will be generated. If unspecified, the program will be run once.
-One file will be created for each repetition of the program.
-Use "-a" or "--append" to avoid this, and instead append the results of each run to the chosen output file.
+One file will be generated per run. To add results to a single file instead, use "-a" or "--append".
 
 Try:
 
-.\random.exe .\startrek\start -o output -c 3 -a
+.\random.exe .\startrek\start -o new_trek -c 1 -a
+
+.\random.exe .\name70k -o outputname -c 3 -a
