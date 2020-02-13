@@ -1,12 +1,15 @@
 Files under /startrek/ were trimmed from https://www-cs-faculty.stanford.edu/~zelenski/rsg/
 Thanks to Julie Zelenski for the inspiration and concept, and to Karl Brown for the example.
 
-Run in a windows command line:
+Instructions (run in a Windows command line):
 
-.\random1.exe (filename you'd like to generate from) (output file to save results) (number of times)
+.\random.exe (filename you'd like to generate from) -o (output file to save results) -c (number of times) -a
+
+-o, -c, and -a are optional.
+By default no file will be generated. If unspecified, the program will be run once.
+One file will be created for each repetition of the program.
+Use "-a" or "--append" to avoid this, and instead append the results of each run to the chosen output file.
 
 Try:
 
-.\random1.exe startrek\start output 3
-
-.\random1.exe kanji output 10
+.\random.exe .\startrek\start -o output -c 3 -a
