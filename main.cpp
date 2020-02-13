@@ -6,7 +6,10 @@
 #include <fstream>
 #include <vector>
 #include "random.h"
-//Please see: https://github.com/effolkronium/random
+//Thanks to: https://github.com/effolkronium/random
+#include "argh.h"
+//Thanks to: https://github.com/adishavit/argh
+
 
 using namespace std;
 using Random = effolkronium::random_static;
@@ -73,8 +76,7 @@ struct RSG {
 				}
 			}
 
-		}
-		while (result.find('<') != std::string::npos);
+		} while (result.find('<') != std::string::npos);
 
 		return result;
 	}
@@ -88,7 +90,9 @@ struct RSG {
 		string line;
 
 		while (getline(file, line))
-		{strings.push_back(line);}
+		{
+			strings.push_back(line);
+		}
 
 		/*Pull random line*/
 		line = pickRandom(strings);
@@ -98,46 +102,40 @@ struct RSG {
 
 };
 
-	//STUPID
-	string directory(string filename) {
-	string filename_directory = filename.substr(0, filename.find_last_of('\\')+1);
+//Directory parsing garbage
+string directory(string filename) {
+	string filename_directory = filename.substr(0, filename.find_last_of('\\') + 1);
 	//cout << filename_directory << "\n";
 	return filename_directory;
-	}
-	string onlyfile(string filename) {
-	string filename_end = filename.substr(filename.find_last_of('\\')+1, filename.length() - 1);
+}
+string onlyfile(string filename) {
+	string filename_end = filename.substr(filename.find_last_of('\\') + 1, filename.length() - 1);
 	//cout << filename_end << "\n";
 	return filename_end;
-	}
+}
 
 
 int main(int argc, char* argv[])
 {
-	//Determine filenames
-	if ((argc < 3) | (argc > 4))
+	//Step 1. Determine parameters
+
+	argh::parser arguments(argc, argv, argh::parser::PREFER_PARAM_FOR_UNREG_OPTION);
+
+	string filename, outfilename, outcount;
+	arguments(1) >> filename;
+
+	bool append = true;
+	if (!arguments[{ "-a", "--append" }])
 	{
-		cout << "Arguments: (filename) (output filename) (optional: output count)";
-		return -1;
+		append = false;
+	}
+	
+	if (!(arguments({"-c", "--count"}) >> outcount))
+	{
+		outcount = 1;
 	}
 
-	string filename = argv[1];
-	string outfilename = argv[2];
-	string totalcount = argv[3];
-
-	bool repeatcount = false;
-
-	int rc = 1;
-
-	if (totalcount != "") {
-		if (!stoi(totalcount)) {
-			cout << "Couldn't use that number.";
-			return -1;
-		}
-		repeatcount = true;
-		rc = stoi(totalcount);
-	}
-
-	//Directory garbage
+	//Directory parsing garbage
 	string filename_directory = "";
 	string filename_end = filename;
 	if (filename.find('\\') != string::npos)
@@ -146,21 +144,28 @@ int main(int argc, char* argv[])
 		filename_end = onlyfile(filename);
 	}
 
-	//Load first file and get the ball rolling
+	//Step 2. Load first file into the first recursive function and get the ball rolling
 	ifstream file = loadfile(filename);
 
 	RSG rsg;
-	for (int i = rc; i > 0; i--) {
+	for (int i = 0; i < stoi(outcount); i++) {
 
 		string line = rsg.expand(filename_directory, filename_end); //Expands recursively. Be careful!
 
 		//Output to cout
 		cout << line << "\n\n";
 
-		//Output to file
+		//Output to file(s)
 		ofstream outfile;
-		outfile.open(outfilename, ios::app);
-		outfile << line + " ";
+
+		if (arguments({ "-o", "--output" }) >> outfilename)
+		{
+			if (append)
+				outfile.open(outfilename, ios::app);
+			else
+				outfile.open(outfilename + "-" + to_string(i));
+			outfile << line + "\n\n";
+		}
 
 	}
 
