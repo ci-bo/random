@@ -130,10 +130,7 @@ int main(int argc, char* argv[])
 		append = false;
 	}
 	
-	if (!(arguments({"-c", "--count"}) >> outcount))
-	{
-		outcount = 1;
-	}
+	arguments({ "-c", "--count" },1) >> outcount;
 
 	//Directory parsing garbage
 	string filename_directory = "";
@@ -153,7 +150,7 @@ int main(int argc, char* argv[])
 		string line = rsg.expand(filename_directory, filename_end); //Expands recursively. Be careful!
 
 		//Output to cout
-		cout << line << "\n\n";
+		cout << line << "\n";
 
 		//Output to file(s)
 		ofstream outfile;
@@ -164,7 +161,7 @@ int main(int argc, char* argv[])
 				outfile.open(outfilename, ios::app);
 			else
 				outfile.open(outfilename + "-" + to_string(i));
-			outfile << line + "\n\n";
+			outfile << line << "\n";
 		}
 
 	}
